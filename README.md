@@ -20,21 +20,22 @@ affect or interfere with the code involved in the 'Model' or vice versa.
 While the 'Contoller', in this arrangement, controls the
 current 'state' of the application and any direction
 the application takes in its lifecycle.
+
 ![MVC Diagram](https://i.imgur.com/r4C1y28.png)
 
 Placed in your main.dart file, only four simple Classes in all are involved with the intent here
 to make the implementation of **MVC** in Flutter as intuitive as possible.
-Further notice how Dependency Injection is introduced in its purest form---
-with each **MVC** component appropriately passed to one another as parameters.
+Further notice how Dependency Injection is introduced in its purest form---with
+each **MVC** component appropriately passed to one another as parameters.
 ![4 Classes](https://i.imgur.com/BqxMSeP.png)
 
 
-Simply inherit from the appropriate MVC Classes: 
+Simply inherit from the three "KISS" MVC Classes: 
 AppModel, AppView and AppConntroller
 
-Below, for example, are the subclasses of the three MVC Classes.
-Now fill them up with what will make up your Flutter applcation
-(the appropriate code in the appropriate Class), and you're done!
+Below, for example, are the subclasses of those three MVC Classes.
+Now you fill them up with what will make up your Flutter applcation
+(with the appropriate code in the appropriate Class), and you're done!
 
 Model Class
 ![Model](https://i.imgur.com/mUIo8sq.png)
@@ -54,11 +55,12 @@ View Class
 
 
 In Flutter, its possible to 'try before you fork' this repo by inserting
-into your metadata file, **pubspec.yaml**, the git url to this repo.:
+into your metadata file, **pubspec.yaml**, the git url:
 ![mvc git url](https://i.imgur.com/gIc1ejh.png)
 
-![Exclaimation Point](https://i.imgur.com/ghlz1Sk.png)
-Note: Better to download or fork as this repo. will not last forever.
+![Exclaimation Point](https://i.imgur.com/KfdDFVK.png)
+Better to download or fork as this repo., however, as will not last forever.
+(Nothing ever does.)
 Download it. Make it better. Then Share.
 
 http://github.com - automatic!
