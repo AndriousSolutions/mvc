@@ -7,7 +7,7 @@ A MVC Flutter Framework
 For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
 
-![Flutter + MVC](https://imgur.com/a/EvOzr)
+![Flutter + MVC](https://i.imgur.com/r4C1y28.png)
 
 ```sh
 import 'package:mvc/App.dart';
