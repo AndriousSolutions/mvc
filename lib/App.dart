@@ -14,14 +14,14 @@ import 'package:mvc/AppView.dart';
 ///
 class App extends StatelessWidget {
 
-  const App(this.vw);
+  const App(this.view);
 
-  final AppView vw;
+  final AppView view;
 
   // if you want to start with the StatefulWidget right away.
-  static void run(AppView vw){
-    assert(vw != null, 'Must instaniate this class, App, with an Appview parameter object!');
-    runApp(new AppStatefulWidget(vw));
+  static void run(AppView view){
+    assert(view != null, 'Must instaniate this class, App, with an Appview parameter object!');
+    runApp(new AppStatefulWidget(view));
   }
 
   @override
@@ -31,7 +31,7 @@ class App extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new AppStatefulWidget(vw),
+      home: new AppStatefulWidget(view),
     );
   }
 }
