@@ -1,6 +1,6 @@
-import 'package:mvc/AppController.dart' show AppController;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show BuildContext, Widget, VoidCallback;
-
+import 'package:mvc/AppController.dart' show AppController;
 ///
 ///
 ///
@@ -42,6 +42,14 @@ abstract class AppView{
   setState(VoidCallback fn) {
     con.reState(fn);
   }
+
+  // Override to get a 'Controller' reference in the subclass
+  // However, don't forget to call its super function.
+  @ protected
+  @ mustCallSuper
+  setCon(AppController con) => _con = con;
+
+  AppController _con;
 }
 
 
