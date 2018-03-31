@@ -5,6 +5,8 @@ import 'Model.dart' show Model;
 ///
 class Controller extends AppController{
 
-  final Model _model = new Model();
+  Controller(this.mod);
+  
+  final Model mod;
 
 }
