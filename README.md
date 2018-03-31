@@ -84,8 +84,12 @@ into your metadata file, **pubspec.yaml**: `git://github.com/AndriousSolutions/m
 ![mvc git url](https://i.imgur.com/gIc1ejh.png)
 
 ![Exclaimation Point](https://i.imgur.com/KfdDFVK.png)
-This repo will not last forever(Nothing ever does). Download it. Make it better. Then Share.
+This repo won't last forever(Nothing ever does). Download it. Make it better. Then Share.
 
+## Read the Article...
+[An MVC approach to Flutter](https://proandroiddev.com/mvc-in-flutter-ebfba2a78842) - for 
+more insight of how this was intended to work.
+          
 ## Getting Started with Flutter
 
-[Online Documentation](https://flutter.io/).
+[Online Documentation](https://flutter.io/)
