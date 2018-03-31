@@ -42,7 +42,7 @@ Model Class
 View Class
 ![View](https://i.imgur.com/3N73L5D.png)
 Controller Class
-![Controller](https://i.imgur.com/BXM4Wl4.png)
+![Controller](https://i.imgur.com/FVX3YHx.png)
 
 
 **Think of it this way...**
@@ -52,32 +52,24 @@ Controller Class
                                   
 ## 'View' is the `build()` function
 Like the traditional **build()** function, you have the 
-**setState()** function. Further, if you place your 'View'
+**setState()** function. Further, if you have your 'View'
 Class in a separate file (e.g. View.dart), you then can have
 all your code responsible for the 'look and feel' in one place.
-As well as as many top-level functions, top-level variables other
-Classes you like, and all in one file.
+As well as as many top-level functions, top-level variables 
+and as many other Classes you like---all in one file.
 ## 'Controller' is `StatefulWidget` + `State<T extends StatefulWidget>`
 And like the State object, you have access to the 
 usual properties: **widget**, **context** and **mounted**. Further,
-the Controller (and it's data info.) will persist between build() function calls like
+the Controller (and it's data info.) will persist between **build()** function calls like
 the State object.
 
-
-
-
-
-
-
-
-
-
+## Try it out now
 In Flutter, its possible to 'try before you fork' this repo by inserting
-into your metadata file, **pubspec.yaml**, this git url:
+into your metadata file, **pubspec.yaml**, this git url: `git://github.com/AndriousSolutions/mvc.git`
 ![mvc git url](https://i.imgur.com/gIc1ejh.png)
 
 ![Exclaimation Point](https://i.imgur.com/KfdDFVK.png)
-This repo will not last forever.(Nothing ever does.)Download it. Make it better. Then Share.
+This repo will not last forever(Nothing ever does). Download it. Make it better. Then Share.
  ## Getting Started with Flutter
 
 [Online Documentation](https://flutter.io/).
