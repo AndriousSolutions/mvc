@@ -11,13 +11,8 @@ import 'package:mvc/AppController.dart' show AppController;
 ///
 class AppModel{
 
-  /// Allow for a reference to the AppController
-  /// The Controller may have important functionality to this Model.
-  /// Override to get a 'Controller' reference in the subclass
-  /// However, don't forget to call its super function.
-  @ protected
-  @ mustCallSuper
-  setCon(AppController con) => _con = con;
+
+  setAppCon(AppController con) => _con = con;
 
   AppController _con;
 }
