@@ -42,10 +42,6 @@ abstract class AppView{
   setState(VoidCallback fn) {
     con.reState(fn);
   }
-
-  setAppCon(AppController con) => _con = con;
-
-  AppController _con;
 }
 
 
