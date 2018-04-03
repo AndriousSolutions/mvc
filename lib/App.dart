@@ -21,7 +21,7 @@ class App extends StatelessWidget {
   // if you want to start with the StatefulWidget right away.
   static void run(AppView view){
     assert(view != null, 'Must instaniate this class, App, with an Appview parameter object!');
-    runApp(new AppStatefulWidget(view));
+    runApp(new MaterialApp(home:new AppStatefulWidget(view)));
   }
 
   @override
