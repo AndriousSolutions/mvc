@@ -10,18 +10,15 @@ import 'package:flutter/material.dart';
 ///                                     Andrious Solutions Ltd. 2018-03-25
 ///
 abstract class StateWidget extends StatefulWidget{
-  StateWidget([Key key]): super(key: key){
+  StateWidget({Key key}): super(key: key);
 
-     _state = new _WidgetState(this);
-  }
+  final _WidgetState  _state = new _WidgetState();
 
-  _WidgetState _state;
+  get widget => _state.widget;
 
-  get widget => _state.widget; // this.createElement().state.widget;
+  get context => _state.context;
 
-  get context => _state.context; // this.createElement().state.context;
-
-  get mounted => _state.mounted; // this.createElement().state.mounted;
+  get mounted => _state.mounted;
 
   Widget build(BuildContext context);
 
@@ -29,20 +26,32 @@ abstract class StateWidget extends StatefulWidget{
     _state.reState(fn);
   }
 
+
+  void initState() {
+    // Free to override in subclasses
+  }
+
+  void dispose() {
+    // Free to override in subclasses
+  }
+
   @override
-  createState() => _state;
+  createState() => _state.setStateWidget(this);
 }
 
 
 class _WidgetState extends State<StateWidget> with WidgetsBindingObserver {
 
-  _WidgetState(this.stateWidget);
+  StateWidget _stateWidget;
 
-  final StateWidget stateWidget;
+  setStateWidget(StateWidget widget){
+
+    _stateWidget = widget;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return stateWidget.build(context);
+    return _stateWidget.build(context);
   }
 
   reState(VoidCallback fn) {
@@ -57,12 +66,14 @@ class _WidgetState extends State<StateWidget> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _stateWidget.initState();
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _stateWidget.dispose();
     super.dispose();
   }
 
