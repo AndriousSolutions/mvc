@@ -5,7 +5,10 @@ import 'Model.dart' show Model;
 ///
 class Controller extends AppController{
 
-  Controller(this.mod);
+  Controller(this.mod){
+
+    mod.setCon(this);
+  }
   
   final Model mod;
 
