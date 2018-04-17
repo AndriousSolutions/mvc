@@ -44,9 +44,11 @@ class _WidgetState extends State<StateWidget> with WidgetsBindingObserver {
 
   StateWidget _stateWidget;
 
-  setStateWidget(StateWidget widget){
+  State<StateWidget> setStateWidget(StateWidget widget){
 
     _stateWidget = widget;
+
+    return this;
   }
 
   @override
