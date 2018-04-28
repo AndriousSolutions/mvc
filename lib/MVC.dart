@@ -10,20 +10,13 @@
 
 import 'package:flutter/widgets.dart';
 
-
-
-abstract class StateWidget extends MCView{
-  StateWidget([
-    MVController con,
-    Key key,
-  ]) : super(con: con, key: key);
-
-  Widget build(BuildContext context);
-}
-
+import 'StatedWidget.dart';
 
 /// The Controller
 class MVController {
+  MVController([this._dataObj]);
+
+  StatedData _dataObj;
 
   /// A reference to the State object.
   _MVCState state;
@@ -31,7 +24,7 @@ class MVController {
   /// Allow for the widget getter in the build() function.
   get widget => state?.view;
 
-  /// BuildContext is always useful.
+  /// BuildContext is always useful in the build() function.
   get context => state?.context;
 
   /// Ensure the State Object is 'mounted' and not being terminated.
@@ -46,7 +39,7 @@ class MVController {
   /// unsubscribe object and subscribe to a new object when it changes in
   /// [didUpdateWidget], and then unsubscribe from the object in [dispose].
   void initState() {
-    state?.reInitState();
+    _dataObj?.initState();
   }
 
   /// The framework calls this method whenever it removes this [State] object
@@ -54,32 +47,32 @@ class MVController {
   /// Subclasses should override this method to clean up any links between
   /// this object and other elements in the tree (e.g. if you have provided an
   /// ancestor with a pointer to a descendant's [RenderObject]).
-  void deactivate() {
-    state?.reDeactivate();
+  void deactivate(){
+    _dataObj?.deactivate();
   }
 
   /// The framework calls this method when this [State] object will never
   /// build again. The [State] object's lifecycle is terminated.
   /// Subclasses should override this method to release any resources retained
   /// by this object (e.g., stop any active animations).
-  void dispose() {
-    state?.reDispose();
+  void dispose(){
+    _dataObj?.dispose();
   }
 
-  setState(VoidCallback fn) {
+  void setState(VoidCallback fn){
     /// Call the State object's setState() function.
     state?.reState(fn);
   }
 
-  refresh() {
+  void refresh(){
     /// Refresh the Widget Tree Interface
     state?.reState(() {});
   }
 }
 
 
-abstract class MCView extends StatefulWidget {
-  MCView({
+abstract class MCView extends StatefulWidget{
+  const MCView({
     this.con,
     Key key,
   }) : super(key: key);
@@ -93,7 +86,7 @@ abstract class MCView extends StatefulWidget {
   createState(){
 
     /// Pass this 'view' to a State object.
-    var state = new _MVCState(this);
+    var state = new _MVCState(this, con);
 
     /// Get a reference of the State object for the Controller.
     con?.state = state;
@@ -104,7 +97,7 @@ abstract class MCView extends StatefulWidget {
   /// Allow for the widget getter in the build() function.
   get widget => this;
 
-  /// BuildContext is always useful.
+  /// BuildContext is always useful in the build() function.
   get context => con.state.context ?? createState().context;
 
   /// Ensure the State Object is 'mounted' and not being terminated.
@@ -117,26 +110,48 @@ abstract class MCView extends StatefulWidget {
 
 
 /// The State Object
-class _MVCState extends State<MCView> {
-  _MVCState(
-      this.view
+class _MVCState extends State<MCView> with WidgetsBindingObserver  {
+   _MVCState(
+      this.view,
+      this._con,
       );
 
   final MCView view;
 
-  void reInitState(){
+  final MVController _con;
+
+  @override
+  void initState(){
     /// called when the [State] object is first created.
-    initState();
+    super.initState();
+    _con?.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  void reDeactivate(){
+  @override
+  void deactivate(){
     /// called when this [State] object is removed from the tree.
-    deactivate();
+    _con?.deactivate();
+    super.deactivate();
   }
 
-  void reDispose(){
+  @override
+  void dispose(){
     /// called when this [State] object will never build again.
-    dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _con?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(MCView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+
   }
 
   void reState(VoidCallback fn) {
