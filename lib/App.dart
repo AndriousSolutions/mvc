@@ -24,6 +24,15 @@ class App extends StatelessWidget {
     runApp(new MaterialApp(home:new AppStatefulWidget(view)));
   }
 
+  
+
+  static void runWidget(StatefulWidget widget){
+    assert(widget != null, 'Must instaniate this class, App, with an StatefulWidget parameter object!');
+    runApp(new MaterialApp(home: widget));
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
