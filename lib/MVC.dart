@@ -103,6 +103,12 @@ abstract class MCView extends StatefulWidget{
   /// Ensure the State Object is 'mounted' and not being terminated.
   get mounted => con.state.mounted ?? createState().mounted;
 
+  /// Provide the setState() function to the build() function.
+  /// Although it's the Controller that should do all the calling of setState() function.
+  setState(VoidCallback fn){
+    con.setState(fn);
+  }
+
   /// Provide 'the view'
   Widget build(BuildContext context);
 }
