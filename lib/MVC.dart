@@ -10,6 +10,8 @@
 
 import 'package:flutter/widgets.dart';
 
+import 'package:flutter/foundation.dart' show Key, VoidCallback;
+
 import 'StatedWidget.dart';
 
 /// The Controller
@@ -59,6 +61,14 @@ class MVController {
     _dataObj?.dispose();
   }
 
+  void didUpdateWidget(MCView oldWidget) {
+    _dataObj?.didUpdateWidget(oldWidget);
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _dataObj?.didChangeAppLifecycleState(state);
+  }
+
   void setState(VoidCallback fn){
     /// Call the State object's setState() function.
     state?.reState(fn);
@@ -106,7 +116,7 @@ abstract class MCView extends StatefulWidget{
   /// Provide the setState() function to the build() function.
   /// Although it's the Controller that should do all the calling of setState() function.
   setState(VoidCallback fn){
-    con.setState(fn);
+    con?.setState(fn);
   }
 
   /// Provide 'the view'
@@ -151,13 +161,18 @@ class _MVCState extends State<MCView> with WidgetsBindingObserver  {
 
   @override
   void didUpdateWidget(MCView oldWidget) {
+    /// Override this method to respond when the [widget] changes (e.g., to start
+    /// implicit animations).
+    /// The framework always calls [build] after calling [didUpdateWidget], which
+    /// means any calls to [setState] in [didUpdateWidget] are redundant.
     super.didUpdateWidget(oldWidget);
-
+    _con?.didUpdateWidget(oldWidget);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-
+    /// Passing either the values AppLifecycleState.paused or AppLifecycleState.resumed.
+    _con?.didChangeAppLifecycleState(state);
   }
 
   void reState(VoidCallback fn) {
