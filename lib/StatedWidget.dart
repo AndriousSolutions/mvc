@@ -48,6 +48,14 @@ class StatedData{
     /// called when this [State] object will never build again.
   }
 
+  void didUpdateWidget(MCView oldWidget) {
+    /// Override this method to respond when the [widget] changes.
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// called when the app's lifecycle state changes.
+  }
+
   setState(VoidCallback fn){
     _con.setState(fn);
   }
