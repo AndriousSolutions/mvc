@@ -136,6 +136,9 @@ class _MVCState extends State<MCView> with WidgetsBindingObserver  {
 
   final MVController _con;
 
+  get buildWidget => _build;
+  Widget _build;
+
   @override
   void initState(){
     /// called when the [State] object is first created.
@@ -154,6 +157,7 @@ class _MVCState extends State<MCView> with WidgetsBindingObserver  {
   @override
   void dispose(){
     /// called when this [State] object will never build again.
+    _build = null;
     WidgetsBinding.instance.removeObserver(this);
     _con?.dispose();
     super.dispose();
@@ -184,7 +188,8 @@ class _MVCState extends State<MCView> with WidgetsBindingObserver  {
   /// The View
   Widget build(BuildContext context){
     /// Here's where the magic happens.
-    return view.build(context);
+    _build = view.build(context);
+    return _build;
   }
 }
 
@@ -193,12 +198,12 @@ class _MVCState extends State<MCView> with WidgetsBindingObserver  {
 
 import 'package:flutter/material.dart';
 
-import 'MVC.dart';
+import 'package:mvc/MVC.dart';
 
 import 'Controller.dart';
 
 class View extends MCView{
-    View(this._con): super(_con);
+    View(this._con): super(con: _con);
 
     final Controller _con;
 
