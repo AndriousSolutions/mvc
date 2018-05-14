@@ -14,12 +14,41 @@ import 'MVC.dart';
 
 abstract class StatedWidget extends MCView{
   StatedWidget({
-    StatedData data,
+    this.data,
     Key key,
   }) : super(con: data._con, key: key);
 
+  final StatedData data;
+
   /// Where the magic happens.
   Widget build(BuildContext context);
+
+
+  /// Allow for this widget to be referenced in the build() function.
+  @override
+  get widget => this;
+  
+  void onPressed(){
+
+      try {
+
+        data?.onPressed();
+
+      } catch (ex){
+
+      }
+  }
+
+  void onTap(){
+
+      try {
+
+        data?.onTap();
+
+      } catch (ex){
+
+      }
+  }
 }
 
 
@@ -54,6 +83,14 @@ class StatedData{
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     /// called when the app's lifecycle state changes.
+  }
+
+  void onPressed(){
+    /// Override to answer a call to widget.onPressed.
+  }
+
+  void onTap(){
+    /// Override to answer a call to widget.onTap.
   }
 
   setState(VoidCallback fn){
