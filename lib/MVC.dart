@@ -8,7 +8,7 @@
 ///                                     Andrious Solutions Ltd. 2018-04-19
 ///
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver;
 
 import 'package:flutter/foundation.dart' show Key, VoidCallback;
 
