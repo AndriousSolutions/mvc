@@ -1,6 +1,7 @@
+.gitignore
 .DS_Store
 .atom/
-.idea
+.idea/
 .vscode/
 .packages
 .pub/
@@ -10,7 +11,9 @@ packages
 .flutter-plugins
 doc/api/
 .dart_tool/
-pubspec.lock  // Except for application packages
+
+# Except for application packages
+#pubspec.lock  
 
 # Don't need the Android stuff
 android/
