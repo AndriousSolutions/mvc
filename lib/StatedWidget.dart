@@ -8,15 +8,12 @@
 ///                                     Andrious Solutions Ltd. 2018-04-19
 ///
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleState, BuildContext, StatefulWidget, VoidCallback, Widget;
 
-import 'MVC.dart';
+import 'MVC.dart' show MCView, MVController;
 
 abstract class StatedWidget extends MCView{
-  StatedWidget({
-    this.data,
-    Key key,
-  }) : super(con: data._con, key: key);
+  StatedWidget({this.data}) : super(data._con);
 
   final StatedData data;
 
@@ -24,10 +21,6 @@ abstract class StatedWidget extends MCView{
   Widget build(BuildContext context);
 
 
-  /// Allow for this widget to be referenced in the build() function.
-  @override
-  get widget => this;
-  
   void onPressed(){
 
       try {
@@ -52,12 +45,16 @@ abstract class StatedWidget extends MCView{
 }
 
 
+
 class StatedData{
   StatedData() {
     /// Favor Composition over Inheritance.
     _con = new MVController(this);
   }
   var _con;
+  get con => _con;
+  /// A getter with a more descriptive name.
+  get controller => _con;
 
   get widget => _con.widget;
 
@@ -77,7 +74,7 @@ class StatedData{
     /// called when this [State] object will never build again.
   }
 
-  void didUpdateWidget(MCView oldWidget) {
+  void didUpdateWidget(StatefulWidget oldWidget) {
     /// Override this method to respond when the [widget] changes.
   }
 
