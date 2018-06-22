@@ -14,23 +14,136 @@ import 'package:flutter/foundation.dart' show Key, VoidCallback;
 
 import 'StatedWidget.dart';
 
-/// The Controller
+
+
+
+/// The State Object for this MVC Design Pattern
+class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
+
+  MVCState({this.view}): _con = view?._con{
+    /// Get a reference of the State object for the Controller.
+    view?._con?._state = this;
+  }
+  final MCView view;
+  final MVController _con;
+
+  get buildWidget => _build;
+  Widget _build;
+
+  @override
+  void initState(){
+    /// called when the [State] object is first created.
+    super.initState();
+    view?.widget = widget;
+    _con?.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void deactivate(){
+    /// called when this [State] object is removed from the tree.
+    _con?.deactivate();
+    super.deactivate();
+  }
+
+  @override
+  void dispose(){
+    /// called when this [State] object will never build again.
+    _build = null;
+    WidgetsBinding.instance.removeObserver(this);
+    _con?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(StatefulWidget oldWidget) {
+    /// Override this method to respond when the [widget] changes (e.g., to start
+    /// implicit animations).
+    /// The framework always calls [build] after calling [didUpdateWidget], which
+    /// means any calls to [setState] in [didUpdateWidget] are redundant.
+    super.didUpdateWidget(oldWidget);
+    _con?.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Passing either the values AppLifecycleState.paused or AppLifecycleState.resumed.
+    _con?.didChangeAppLifecycleState(state);
+  }
+
+  void reState(VoidCallback fn) {
+    /// Calls the 'real' setState()
+    /// setState() can only be called within this class.
+    setState(fn);
+  }
+
+  /// The View
+  Widget build(BuildContext context){
+    /// Here's where the magic happens.
+    _build = view.build(context);
+    return _build;
+  }
+}
+
+
+
+/// The View of MVC
+abstract class MCView{
+
+  MCView([this._con]);
+
+  MVController _con;
+
+  get con => controller;
+  set con(MVController c) => controller = c;
+  /// A getter with a more descriptive name.
+  get controller => _con;
+  set controller(MVController c){
+    assert(_con == null, "A Controller already assigned!");
+    _con = c;
+  }
+
+  /// Allow for the widget getter in the build() function.
+  StatefulWidget _widget;
+  get widget => _widget ?? this;
+  set widget(StatefulWidget w) => _widget = w;
+
+  /// BuildContext is always useful in the build() function.
+  get context => _con?._state?.context;
+
+  /// Ensure the State Object is 'mounted' and not being terminated.
+  get mounted => _con?._state?.mounted;
+
+  /// Provide the setState() function to the build() function.
+  /// Although it's the Controller that should do all the calling of setState() function.
+  setState(VoidCallback fn){
+    _con?.setState(fn);
+  }
+
+  /// Provide 'the view'
+  Widget build(BuildContext context);
+}
+
+
+
+
+/// The Controller of MVC
 class MVController {
   MVController([this._dataObj]);
 
   StatedData _dataObj;
 
   /// A reference to the State object.
-  _MVCState state;
+  MVCState _state;
 
   /// Allow for the widget getter in the build() function.
-  get widget => state?.view;
+  get widget => _state?.view;
 
   /// BuildContext is always useful in the build() function.
-  get context => state?.context;
+  get context => _state?.context;
 
   /// Ensure the State Object is 'mounted' and not being terminated.
-  get mounted => state?.mounted;
+  get mounted => _state?.mounted;
 
   /// The framework will call this method exactly once.
   /// Only when the [State] object is first created.
@@ -61,7 +174,7 @@ class MVController {
     _dataObj?.dispose();
   }
 
-  void didUpdateWidget(MCView oldWidget) {
+  void didUpdateWidget(StatefulWidget oldWidget) {
     _dataObj?.didUpdateWidget(oldWidget);
   }
 
@@ -71,132 +184,22 @@ class MVController {
 
   void setState(VoidCallback fn){
     /// Call the State object's setState() function.
-    state?.reState(fn);
+    _state?.reState(fn);
   }
 
   void refresh(){
     /// Refresh the Widget Tree Interface
-    state?.reState(() {});
+    _state?.reState(() {});
   }
 }
 
 
-abstract class MCView extends StatefulWidget{
-  const MCView({
-    this.con,
-    Key key,
-  }) : super(key: key);
-
-  final MVController con;
-
-  /// A getter with a more descriptive name.
-  get controller => con;
-
-  @override
-  createState(){
-
-    /// Pass this 'view' to a State object.
-    var state = new _MVCState(this, con);
-
-    /// Get a reference of the State object for the Controller.
-    con?.state = state;
-
-    return state;
-  }
-
-  /// Allow for the widget getter in the build() function.
-  get widget => this;
-
-  /// BuildContext is always useful in the build() function.
-  get context => con.state.context ?? createState().context;
-
-  /// Ensure the State Object is 'mounted' and not being terminated.
-  get mounted => con.state.mounted ?? createState().mounted;
-
-  /// Provide the setState() function to the build() function.
-  /// Although it's the Controller that should do all the calling of setState() function.
-  setState(VoidCallback fn){
-    con?.setState(fn);
-  }
-
-  /// Provide 'the view'
-  Widget build(BuildContext context);
-}
 
 
 
-/// The State Object
-class _MVCState extends State<MCView> with WidgetsBindingObserver  {
-   _MVCState(
-      this.view,
-      this._con,
-      );
-
-  final MCView view;
-
-  final MVController _con;
-
-  get buildWidget => _build;
-  Widget _build;
-
-  @override
-  void initState(){
-    /// called when the [State] object is first created.
-    super.initState();
-    _con?.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void deactivate(){
-    /// called when this [State] object is removed from the tree.
-    _con?.deactivate();
-    super.deactivate();
-  }
-
-  @override
-  void dispose(){
-    /// called when this [State] object will never build again.
-    _build = null;
-    WidgetsBinding.instance.removeObserver(this);
-    _con?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(MCView oldWidget) {
-    /// Override this method to respond when the [widget] changes (e.g., to start
-    /// implicit animations).
-    /// The framework always calls [build] after calling [didUpdateWidget], which
-    /// means any calls to [setState] in [didUpdateWidget] are redundant.
-    super.didUpdateWidget(oldWidget);
-    _con?.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /// Passing either the values AppLifecycleState.paused or AppLifecycleState.resumed.
-    _con?.didChangeAppLifecycleState(state);
-  }
-
-  void reState(VoidCallback fn) {
-    /// Calls the 'real' setState()
-    /// setState() can only be called within this class.
-    setState(fn);
-  }
-
-  /// The View
-  Widget build(BuildContext context){
-    /// Here's where the magic happens.
-    _build = view.build(context);
-    return _build;
-  }
-}
 
 
 /*  Copy n' paste this code to then implement these Classes:
-
-import 'package:flutter/material.dart';
 
 import 'package:mvc/MVC.dart';
 
@@ -208,6 +211,23 @@ class View extends MCView{
     final Controller _con;
 
 }
+
+     or If you don't want to use a parameter:
+
+import 'package:mvc/MVC.dart';
+
+import 'Controller.dart';
+
+class View extends MCView{
+  View(): _con = Controller() {
+    this.con = _con;
+  }
+
+
+
+
+
+
 
 
 import 'MVC.dart';
