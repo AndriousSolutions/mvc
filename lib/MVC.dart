@@ -7,6 +7,7 @@
 /// http://www.apache.org/licenses/LICENSE-2.0
 ///                                     Andrious Solutions Ltd. 2018-04-19
 ///
+import 'dart:async';
 
 import 'package:flutter/widgets.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver;
 
@@ -20,21 +21,37 @@ import 'StatedWidget.dart';
 /// The State Object for this MVC Design Pattern
 class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
 
-  MVCState({this.view}): _con = view?._con{
-    /// Get a reference of the State object for the Controller.
-    view?._con?._state = this;
+  /// Allow for Mixins
+  MVCState(): super();
+
+
+  MVCState.set(MCView vw){
+    setView(vw);
   }
-  final MCView view;
-  final MVController _con;
+
+
+  MVCState setView(MCView vw){
+    _view = vw;
+    _con = _view?._con;
+    /// Get a reference of the State object for the Controller.
+    _view?._con?._state = this;
+    return this;
+  }
+
+  get view => _view;
+  MCView _view;
+
+  MVController _con;
 
   get buildWidget => _build;
   Widget _build;
+
 
   @override
   void initState(){
     /// called when the [State] object is first created.
     super.initState();
-    view?.widget = widget;
+    _view?.widget = widget;
     _con?.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -80,7 +97,7 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
   /// The View
   Widget build(BuildContext context){
     /// Here's where the magic happens.
-    _build = view.build(context);
+    _build = _view.build(context);
     return _build;
   }
 }
@@ -120,6 +137,9 @@ abstract class MCView{
     _con?.setState(fn);
   }
 
+  /// Override if you wish to initialize code.
+  Future<bool> init() async => Future.value(true);
+
   /// Provide 'the view'
   Widget build(BuildContext context);
 }
@@ -134,10 +154,11 @@ class MVController {
   StatedData _dataObj;
 
   /// A reference to the State object.
+  get state => _state;
   MVCState _state;
 
   /// Allow for the widget getter in the build() function.
-  get widget => _state?.view;
+  get widget => _state?._view;
 
   /// BuildContext is always useful in the build() function.
   get context => _state?.context;
