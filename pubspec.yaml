@@ -15,9 +15,18 @@ dependencies:
 #      url: git://github.com/AndriousSolutions/mvc.git
 
   prefs:
-    path: ../../libs/prefs
-#    git:
-#      url: git://github.com/AndriousSolutions/prefs.git
+#    path: ../../libs/prefs
+    git:
+      url: git://github.com/AndriousSolutions/prefs.git
+
+  # Files utilities from my library
+  file_utils:
+    git:
+      url: git://github.com/AndriousSolutions/files.git
+
+
+  # https://pub.dartlang.org/packages/connectivity#-changelog-tab-
+  connectivity: "^0.3.0"
 
 dev_dependencies:
   flutter_test:
