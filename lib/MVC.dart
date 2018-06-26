@@ -7,11 +7,10 @@
 /// http://www.apache.org/licenses/LICENSE-2.0
 ///                                     Andrious Solutions Ltd. 2018-04-19
 ///
-import 'dart:async';
 
 import 'package:flutter/widgets.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver;
 
-import 'package:flutter/foundation.dart' show Key, VoidCallback;
+import 'package:flutter/foundation.dart' show VoidCallback;
 
 import 'StatedWidget.dart';
 
@@ -137,9 +136,6 @@ abstract class MCView{
     _con?.setState(fn);
   }
 
-  /// Override if you wish to initialize code.
-  Future<bool> init() async => Future.value(true);
-
   /// Provide 'the view'
   Widget build(BuildContext context);
 }
@@ -165,6 +161,7 @@ class MVController {
 
   /// Ensure the State Object is 'mounted' and not being terminated.
   get mounted => _state?.mounted;
+
 
   /// The framework will call this method exactly once.
   /// Only when the [State] object is first created.
