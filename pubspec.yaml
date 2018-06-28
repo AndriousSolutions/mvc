@@ -14,6 +14,16 @@ dependencies:
 #    git:
 #      url: git://github.com/AndriousSolutions/mvc.git
 
+  auth:
+#    path: ../../libs/auth
+    git:
+      url: git://github.com/AndriousSolutions/auth.git
+
+  assets:
+#    path: ../../libs/assets
+    git:
+      url: git://github.com/AndriousSolutions/assets.git
+
   prefs:
 #    path: ../../libs/prefs
     git:
