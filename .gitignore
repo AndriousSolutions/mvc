@@ -12,8 +12,8 @@ packages
 doc/api/
 .dart_tool/
 
-# Except for application packages
-#pubspec.lock  
+# Don't ignore however for application packages
+pubspec.lock
 
 # Don't need the Android stuff
 android/
