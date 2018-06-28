@@ -35,8 +35,10 @@ import 'package:file_utils/InstallFile.dart';
 
 import 'package:prefs/prefs.dart';
 
-/// class Assets
-import 'package:flutter/services.dart';
+import 'package:auth/Auth.dart';
+
+import 'package:assets/Assets.dart';
+
 
 
 
@@ -53,27 +55,118 @@ class App extends StatelessWidget {
         _title = title ?? '',
         _vw = view,
         _state = state?.setView(view) ?? AppState.set(view),
-        super(key: key);
+        super(key: key){
+    _app = MyApp(_vw, state: _state);
+  }
   final String _title;
   final MCView _vw;
   final MVCState _state;
-
+  static MyApp _app;
 
 
   @override
   Widget build(BuildContext context) {
-    var app = MyApp(_vw, state: _state);
     return MaterialApp(
       title: _title,
       theme: MyApp.getThemeData(),
       home: FutureBuilder(
-        future: app.init(),
+        future: _app.init(),
         builder: (_, snapshot) {
-          return snapshot.hasData ? app : LoadingScreen();
+          return snapshot.hasData ? _app : LoadingScreen();
         },
       ),
     );
   }
+
+  static Future<String> getInstallNum() => MyApp.getInstallNum();
+
+  static addConnectivityListener(ConnectivityListener listener) => MyApp.addConnectivityListener(listener);
+
+  static removeConnectivityListener(ConnectivityListener listener) => MyApp.removeConnectivityListener(listener);
+
+  static clearConnectivityListener() => MyApp.clearConnectivityListener();
+
+  static bool get inDebugger => MyApp.inDebugger;
+}
+
+
+
+class MyApp extends StatefulWidget {
+
+  factory MyApp(MCView view,{Key key, AppState state}){
+    if(_this == null) _this = MyApp._getInstance(view, key: key, state: state);
+    return _this;
+  }
+  /// Make only one instance of this class.
+  static MyApp _this;
+
+  MyApp._getInstance(AppView view,{Key key, AppState state}) :
+        _vw = view,
+        _state = state.setView(view) ?? AppState.set(view),
+        super(key: key);
+  final AppView _vw;
+  final AppState _state;
+
+
+
+  @override
+  State createState(){
+    /// Pass this 'view' to the State object.
+    return _state;
+  }
+
+
+
+  Future<bool> init() async{
+    /// The default is to dump the error to the console.
+    /// Instead, a custom function is called.
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      await _reportError(details);
+    };
+
+    _init();
+
+    return _vw.init();
+  }
+
+
+
+  static getThemeData() {
+
+    Prefs.getStringF('theme').then((value){
+
+      var theme = value ?? 'light';
+
+      ThemeData themeData;
+
+      switch (theme) {
+        case 'light':
+          themeData = ThemeData.light();
+          break;
+        case 'dark':
+          themeData = ThemeData.dark();
+          break;
+        default:
+          themeData = ThemeData.fallback();
+      }
+      return themeData;
+    });
+  }
+
+
+
+  static setThemeData(String theme) {
+    switch (theme) {
+      case 'light':
+        break;
+      case 'dark':
+        break;
+      default:
+        theme = 'fallback';
+    }
+    Prefs.setString('theme', theme);
+  }
+
 
   static final Connectivity _connectivity = new Connectivity();
 
@@ -93,8 +186,8 @@ class App extends StatelessWidget {
   static Set _listeners = new Set();
 
 
-
-  static init(){
+  /// Internal Initialization routines.
+  static void _init(){
 
     /// Get the installation number
     InstallFile.id()
@@ -161,7 +254,7 @@ class App extends StatelessWidget {
 
 
 
-  bool get inDebugger {
+  static bool get inDebugger {
     var inDebugMode = false;
     assert(inDebugMode = true);
     return inDebugMode;
@@ -172,82 +265,6 @@ class App extends StatelessWidget {
 
 abstract class ConnectivityListener{
   onConnectivityChanged(ConnectivityResult result);
-}
-
-
-
-class MyApp extends StatefulWidget {
-
-  factory MyApp(MCView view,{Key key, AppState state}){
-    if(_this == null) _this = MyApp._getInstance(view, key: key, state: state);
-    return _this;
-  }
-  /// Make only one instance of this class.
-  static MyApp _this;
-
-  MyApp._getInstance(AppView view,{Key key, AppState state}) :
-        _vw = view,
-        _state = state.setView(view) ?? AppState.set(view),
-        super(key: key);
-  final AppView _vw;
-  final AppState _state;
-
-
-
-  @override
-  State createState(){
-    /// Pass this 'view' to the State object.
-    return _state;
-  }
-
-
-
-  Future<bool> init() async{
-    /// The default is to dump the error to the console.
-    /// Instead, a custom function is called.
-    FlutterError.onError = (FlutterErrorDetails details) async {
-      await _reportError(details);
-    };
-    return _vw.init();
-  }
-
-
-
-  static getThemeData() {
-
-    Prefs.getStringF('theme').then((value){
-
-      var theme = value ?? 'light';
-
-      ThemeData themeData;
-
-      switch (theme) {
-        case 'light':
-          themeData = ThemeData.light();
-          break;
-        case 'dark':
-          themeData = ThemeData.dark();
-          break;
-        default:
-          themeData = ThemeData.fallback();
-      }
-      return themeData;
-    });
-  }
-
-
-
-  static setThemeData(String theme) {
-    switch (theme) {
-      case 'light':
-        break;
-      case 'dark':
-        break;
-      default:
-        theme = 'fallback';
-    }
-    Prefs.setString('theme', theme);
-  }
 }
 
 
@@ -324,108 +341,24 @@ abstract class AppView extends MCView{
 class AppController extends MVController{
 
   /// Initialize any 'time-consuming' operations at the beginning.
+  @mustCallSuper
   Future<bool> init() async {
+    Auth.init();
+    Prefs.init();
+    var uid = await Auth.signInWithGoogle();
     return Future.value(true);
+  }
+
+  @override
+  @mustCallSuper
+  void dispose() {
+    Auth.dispose();
+    Prefs.dispose();
+    MyApp.dispose();
+    super.dispose();
   }
 }
 
 
-///
-/// Asset Manager for the App
-///
-class Assets{
-
-
-  static Future<bool> init(BuildContext context, {String dir}){
-    _assets = DefaultAssetBundle.of(context);
-    _dir = dir ?? 'assets';
-    return Future.value(true);
-  }
-  static AssetBundle _assets;
-  static String _dir;
-
-
-  static dispose(){
-    _assets = null;
-  }
-
-  
-
-  static Future<ByteData> getStreamF(String key) async {
-    assert(Assets._assets != null, 'Assets.init() must be called first.');
-    ByteData data;
-    try {
-      data = await Assets._assets.load("$setPath(key)$key");
-    }catch(ex){
-      data = ByteData(0);
-    }
-    return data;
-  }
-
-
-
-  static Future<String> getStringF(String key,{bool cache = true}) async {
-    assert(Assets._assets != null, 'Assets.init() must be called first.');
-    String asset;
-    try {
-      asset = await Assets._assets.loadString("$setPath(key)$key", cache: cache);
-    }catch(ex){
-      asset = '';
-    }
-    return asset;
-  }
-
-
-
-  Future<T> getData<T>(String key, Future<T> parser(String value)) async {
-    assert(Assets._assets != null, 'Assets.init() must be called first.');
-    Future<T> data;
-    try {
-      data = Assets._assets.loadStructuredData("$setPath(key)$key", parser);
-    }catch(ex){
-      data = null;
-    }
-    return data;
-  }
-
-
-
-  Future<String> getStringData(String key, Future<String> parser(String value)) async {
-    assert(Assets._assets != null, 'Assets.init() must be called first.');
-    String data;
-    try {
-      data = await Assets._assets.loadStructuredData("$setPath(key)$key", parser);
-    }catch(ex){
-      data = null;
-    }
-    return data;
-  }
-
-
-
-  Future<bool> getBoolData(String key, Future<bool> parser(String value)) async {
-    assert(Assets._assets != null, 'Assets.init() must be called first.');
-    bool data;
-    try {
-      data = await Assets._assets.loadStructuredData("$setPath(key)$key", parser);
-    }catch(ex){
-      data = false;
-    }
-    return data;
-  }
-
-
-  AssetImage getImage(String key,{AssetBundle bundle,String package}){
-    return AssetImage(key, bundle: bundle, package: package);
-  }
-
-
-  /// Determine the appropriate path for the asset.
-  static String setPath(String key){
-    /// In case 'assets' begins the key or if '/' begins the key.
-    var path = key.indexOf(_dir) == 0 ? '' : key.substring(0,0) == '/' ? _dir : "$_dir/";
-    return path;
-  }
-}
 
 
