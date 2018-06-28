@@ -345,7 +345,6 @@ class AppController extends MVController{
   Future<bool> init() async {
     Auth.init();
     Prefs.init();
-    var uid = await Auth.signInWithGoogle();
     return Future.value(true);
   }
 
