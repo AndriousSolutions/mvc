@@ -126,6 +126,9 @@ class MyApp extends StatefulWidget {
 
     _init();
 
+    /// Initialize essential services
+    AppController._init();
+
     return _vw.init();
   }
 
@@ -303,6 +306,7 @@ class AppState extends MVCState {
   void dispose(){
     Assets.dispose();
     _vw.dispose();
+    AppController._dispose();
     super.dispose();
   }
 
@@ -310,7 +314,6 @@ class AppState extends MVCState {
 
   @override
   Widget build(BuildContext context){
-    /// Get the Asset Managers
     Assets.init(context);
     return super.build(context);
   }
@@ -341,20 +344,28 @@ abstract class AppView extends MCView{
 class AppController extends MVController{
 
   /// Initialize any 'time-consuming' operations at the beginning.
-  @mustCallSuper
   Future<bool> init() async {
-    Auth.init();
-    Prefs.init();
     return Future.value(true);
   }
 
   @override
   @mustCallSuper
   void dispose() {
+    super.dispose();
+  }
+
+  /// Initialize items essential to the Mobile Applications.
+  /// Called by the MyApp.init() function.
+  static void _init() async {
+    Prefs.init();
+  }
+
+  /// Ensure certain objects are 'disposed.'
+  /// Callec by the AppState.dispose() function.
+  static void _dispose() {
     Auth.dispose();
     Prefs.dispose();
     MyApp.dispose();
-    super.dispose();
   }
 }
 
