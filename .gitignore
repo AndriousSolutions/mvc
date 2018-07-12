@@ -15,6 +15,12 @@ doc/api/
 # Don't ignore however for application packages
 pubspec.lock
 
+# Android Studio
+*.iml
+
+# Ignore App signing files
+*.jks
+
 # Don't need the Android stuff
 android/
 
