@@ -10,7 +10,7 @@
 
 import 'package:flutter/widgets.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver;
 
-import 'package:flutter/foundation.dart' show VoidCallback;
+import 'package:flutter/material.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver, mustCallSuper;
 
 import 'StatedWidget.dart';
 
@@ -63,6 +63,7 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
   }
 
   @override
+  @mustCallSuper
   void dispose(){
     /// called when this [State] object will never build again.
     _build = null;
@@ -87,10 +88,13 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
     _con?.didChangeAppLifecycleState(state);
   }
 
-  void reState(VoidCallback fn) {
+  void reState(fn) {
     /// Calls the 'real' setState()
     /// setState() can only be called within this class.
-    setState(fn);
+    /// You'd get an error if not mounted.
+    if(mounted){
+      setState(fn);
+    }
   }
 
   /// The View
@@ -132,7 +136,7 @@ abstract class MCView{
 
   /// Provide the setState() function to the build() function.
   /// Although it's the Controller that should do all the calling of setState() function.
-  setState(VoidCallback fn){
+  setState(fn){
     _con?.setState(fn);
   }
 
@@ -200,7 +204,7 @@ class MVController {
     _dataObj?.didChangeAppLifecycleState(state);
   }
 
-  void setState(VoidCallback fn){
+  void setState(fn){
     /// Call the State object's setState() function.
     _state?.reState(fn);
   }
