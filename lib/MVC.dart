@@ -8,6 +8,8 @@
 ///                                     Andrious Solutions Ltd. 2018-04-19
 ///
 
+library mvc;
+
 import 'package:flutter/widgets.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver;
 
 import 'package:flutter/material.dart' show AppLifecycleState, BuildContext, Key, RenderObject, State, StatefulWidget, VoidCallback, Widget, WidgetsBinding, WidgetsBindingObserver, mustCallSuper;
