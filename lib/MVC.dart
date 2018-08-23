@@ -26,23 +26,33 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
   MVCState(): super();
 
 
-  MVCState.set(MCView vw){
-    setView(vw);
+  MVCState.setView(MCView vw){
+    set(vw);
   }
 
 
-  MVCState setView(MCView vw){
+  MVCState.setCon(MVController con){
+    _con = con;
+    /// Get a reference of the State object for the Controller.
+    _con?._state = this;
+  }
+
+
+  MVCState set(MCView vw){
     _view = vw;
     _con = _view?._con;
     /// Get a reference of the State object for the Controller.
     _view?._con?._state = this;
     return this;
   }
+       
 
   get view => _view;
   MCView _view;
 
+
   MVController _con;
+
 
   get buildWidget => _build;
   Widget _build;
@@ -57,12 +67,14 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
     WidgetsBinding.instance.addObserver(this);
   }
 
+
   @override
   void deactivate(){
     /// called when this [State] object is removed from the tree.
     _con?.deactivate();
     super.deactivate();
   }
+
 
   @override
   @mustCallSuper
@@ -74,6 +86,7 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
     super.dispose();
   }
 
+
   @override
   void didUpdateWidget(StatefulWidget oldWidget) {
     /// Override this method to respond when the [widget] changes (e.g., to start
@@ -84,11 +97,13 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
     _con?.didUpdateWidget(oldWidget);
   }
 
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     /// Passing either the values AppLifecycleState.paused or AppLifecycleState.resumed.
     _con?.didChangeAppLifecycleState(state);
   }
+
 
   void reState(fn) {
     /// Calls the 'real' setState()
@@ -99,6 +114,7 @@ class MVCState extends State<StatefulWidget> with WidgetsBindingObserver  {
     }
   }
 
+  
   /// The View
   Widget build(BuildContext context){
     /// Here's where the magic happens.
@@ -151,11 +167,14 @@ abstract class MCView{
 
 /// The Controller of MVC
 class MVController {
-  MVController([this._dataObj]);
+  MVController([this._dataObj]){
+    _dataObj?.con = this;
+  }
 
   StatedData _dataObj;
 
   /// A reference to the State object.
+  /// Assigned only in this library file in the MVCState class
   get state => _state;
   MVCState _state;
 
@@ -215,6 +234,17 @@ class MVController {
     /// Refresh the Widget Tree Interface
     _state?.reState(() {});
   }
+
+  void padState(State state){
+    _states.add(state);
+    _state = state;
+  }
+
+  State popState(){
+    return _states.isEmpty ? _state : _states.remove(_state);
+  }
+
+  final _states = Set<State>();
 }
 
 
