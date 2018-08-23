@@ -47,12 +47,14 @@ abstract class StatedWidget extends MCView{
 
 
 class StatedData{
-  StatedData() {
-    /// Favor Composition over Inheritance.
-    _con = new MVController(this);
-  }
-  var _con;
+
+  MVController _con;
+
   get con => _con;
+  set con(MVController con){
+    /// Can only do it once.
+    if(_con == null) _con = con;
+  }
   /// A getter with a more descriptive name.
   get controller => _con;
 
