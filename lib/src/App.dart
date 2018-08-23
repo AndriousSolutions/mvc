@@ -24,6 +24,9 @@ part of app_flutter;
 
 
 
+
+
+
 class App extends StatelessWidget {
 
   factory App(AppView view,{AppState state,
@@ -38,7 +41,7 @@ class App extends StatelessWidget {
 
   App._getInstance(AppView view, AppState state, Key key) :
         _vw = view,
-        _state = state?.setView(view) ?? AppState.set(view),
+        _state = state?.set(view) ?? AppState.setView(view),
         key = key,
         super(key: key){
     _app = MyApp(_vw, state: _state);
@@ -121,6 +124,9 @@ class App extends StatelessWidget {
 
 
 
+
+
+
 class MyApp extends StatefulWidget {
 
   factory MyApp(MCView view,{Key key, AppState state}){
@@ -132,7 +138,7 @@ class MyApp extends StatefulWidget {
 
   MyApp._getInstance(AppView view,{Key key, AppState state}) :
         _vw = view,
-        _state = state.setView(view) ?? AppState.set(view),
+        _state = state.set(view) ?? AppState.setView(view),
         super(key: key);
   
   final AppView _vw;
@@ -305,6 +311,9 @@ Future<Null> _reportError(FlutterErrorDetails details) async {
 
 
 
+
+
+
 /// Subclass the MVC State object.
 class AppState extends MVCState {
 
@@ -313,26 +322,13 @@ class AppState extends MVCState {
 
 
 
-  AppState.set(AppView vw){
-    _vw = vw;
-    setView(vw);
-  }
-  AppView _vw;
+  AppState.setView(AppView vw): super.setView(vw);
 
 
-
-  Future<bool> init() async {
-    return Future.value(true);
-  }
-
-
-
-  @override
+   @override
   void dispose(){
     App.dispose();
     Assets.dispose();
-//    _vw.dispose();
-//    AppController.dispose();
     super.dispose();
   }
 
@@ -344,6 +340,10 @@ class AppState extends MVCState {
     return super.build(context);
   }
 }
+
+
+
+
 
 
 abstract class AppView extends MCView{
@@ -403,6 +403,7 @@ abstract class AppView extends MCView{
   }
 
   /// Override to dispose anything initialized in your init() function.
+  @mustCallSuper
   void dispose(){
     con.dispose();
   }
@@ -410,6 +411,9 @@ abstract class AppView extends MCView{
   /// Provide 'the view'
   Widget build(BuildContext context);
 }
+
+
+
 
 
 
@@ -445,6 +449,10 @@ class AppController extends MVController{
 
   }
 }
+
+
+
+
 
 
 class AppDrawer extends StatelessWidget {
