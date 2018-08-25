@@ -19,8 +19,35 @@
 ///
 ///          Created  23 Jun 2018
 
-part of app_flutter;
+import 'dart:async';
 
+import 'dart:io' show Platform;
+
+import 'package:flutter/material.dart';
+
+import 'package:connectivity/connectivity.dart';
+
+import 'package:mvc/MVC.dart';
+
+import 'package:file_utils/files.dart';
+
+import 'package:file_utils/InstallFile.dart';
+
+import 'package:prefs/prefs.dart';
+
+import 'package:auth/Auth.dart';
+
+import 'package:assets/Assets.dart';
+
+import 'package:firebase_database/firebase_database.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+
+import 'package:flutter/widgets.dart' show AppLifecycleState;
+
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
 class FireBase{
 
