@@ -20,7 +20,7 @@
 ///          Created  21 Jun 2018
 ///
 
-part of app_flutter;
+import 'package:flutter/material.dart';
 
 ///
 /// This is just a basic `Scaffold` with a centered `CircularProgressIndicator`
