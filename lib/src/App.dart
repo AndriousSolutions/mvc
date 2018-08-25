@@ -20,35 +20,63 @@
 ///          Created  21 Jun 2018
 ///
 
-part of app_flutter;
 
 
+import 'dart:async' show Future, StreamSubscription;
+
+import 'package:flutter/material.dart' show AppLifecycleState, BoxDecoration, BuildContext, Color, Drawer, DrawerHeader, FlutterError, FlutterErrorDetails, FutureBuilder, GenerateAppTitle, GlobalKey, Key, ListTile, ListView, Locale, LocaleResolutionCallback, LocalizationsDelegate, MaterialApp, Navigator, NavigatorObserver, NavigatorState, RouteFactory, Scaffold, ScaffoldState, State, StatelessWidget, Text, Theme, ThemeData, TransitionBuilder, Widget, WidgetBuilder, mustCallSuper;
+
+import 'package:connectivity/connectivity.dart' show Connectivity, ConnectivityResult;
+
+import 'package:mvc/MVC.dart' show MCView, MVController, StatedWidget;
+
+import 'package:file_utils/files.dart' show Files;
+
+import 'package:file_utils/InstallFile.dart' show InstallFile;
+
+import 'package:prefs/prefs.dart' show Prefs;
+
+import 'package:auth/Auth.dart' show Auth;
+
+import 'package:assets/Assets.dart' show Assets;
+
+import 'package:flutter/widgets.dart' show AppLifecycleState;
+
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
+
+import 'package:mvc/src/LoadingScreen.dart' show LoadingScreen;
+
+import 'package:mvc/src/FireBase.dart' show FireBase;
 
 
 
 
 class App extends StatelessWidget {
 
-  factory App(AppView view,{AppState state,
-    Key key,
+  factory App(AppView view,{Key key,
   }){
-    if(_this == null) _this = App._getInstance(view, state, key);
+    if(_this == null){
+      /// The default is to dump the error to the console.
+      /// Instead, a custom function is called.
+      FlutterError.onError = (FlutterErrorDetails details) async {
+        await _reportError(details);
+      };
+      _this = App._getInstance(view, key);
+    }
     return _this;
   }
   
   /// Make only one instance of this class.
   static App _this;
 
-  App._getInstance(AppView view, AppState state, Key key) :
+  App._getInstance(AppView view, Key key) :
         _vw = view,
-        _state = state?.set(view) ?? AppState.setView(view),
         key = key,
         super(key: key){
-    _app = MyApp(_vw, state: _state);
+    _app = MyApp(_vw);
   }
 
   final AppView _vw;
-  final AppState _state;
   final Key key;
   static MyApp _app;
 
@@ -58,6 +86,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Assets.init(context);
     _context = context;
     return MaterialApp(
       key: key,
@@ -127,22 +156,27 @@ class App extends StatelessWidget {
 
 
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatedWidget {
 
-  factory MyApp(MCView view,{Key key, AppState state}){
-    if(_this == null) _this = MyApp._getInstance(view, key: key, state: state);
+  factory MyApp(MCView view,{Key key}){
+    if(_this == null) _this = MyApp._getInstance(view, key: key);
     return _this;
   }
   /// Make only one instance of this class.
   static MyApp _this;
 
-  MyApp._getInstance(AppView view,{Key key, AppState state}) :
+  MyApp._getInstance(AppView view,{Key key}) :
         _vw = view,
-        _state = state.set(view) ?? AppState.setView(view),
+        _state = view.con,
         super(key: key);
   
   final AppView _vw;
-  final AppState _state;
+  final AppController _state;
+
+  @override
+  Widget build(BuildContext context){
+     /// This is not being used in this particular case.
+  }
 
 
 
@@ -150,6 +184,23 @@ class MyApp extends StatefulWidget {
   State createState(){
     /// Pass this 'view' to the State object.
     return _state;
+  }
+
+
+
+  @override
+  void initState(){
+      /// Nothing don't here yet.
+  }
+
+
+  /// Called in the State object's dispose() function.
+  void dispose(){
+
+    _vw.dispose();
+
+    _connectivitySubscription.cancel();
+    _connectivitySubscription = null;
   }
 
 
@@ -218,14 +269,9 @@ class MyApp extends StatefulWidget {
   static Set _listeners = new Set();
 
 
+  
   /// Internal Initialization routines.
   static void _initInternal(){
-
-    /// The default is to dump the error to the console.
-    /// Instead, a custom function is called.
-    FlutterError.onError = (FlutterErrorDetails details) async {
-      await _reportError(details);
-    };
 
     /// Get the installation number
     InstallFile.id()
@@ -248,18 +294,7 @@ class MyApp extends StatefulWidget {
   }
 
 
-
-  /// Called in the State object's dispose() function.
-  void dispose(){
-
-    _vw.dispose();
-
-    _connectivitySubscription.cancel();
-    _connectivitySubscription = null;
-  }
-
-
-  static void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
     FireBase.didChangeAppLifecycleState(state);
   }
 
@@ -308,41 +343,6 @@ Future<Null> _reportError(FlutterErrorDetails details) async {
   // details.exception, details.stack
   FlutterError.dumpErrorToConsole(details);
 }
-
-
-
-
-
-
-/// Subclass the MVC State object.
-class AppState extends MVCState {
-
-  /// Allow for Mixins
-  AppState(): super();
-
-
-
-  AppState.setView(AppView vw): super.setView(vw);
-
-
-   @override
-  void dispose(){
-    App.dispose();
-    Assets.dispose();
-    super.dispose();
-  }
-
-
-
-  @override
-  Widget build(BuildContext context){
-    Assets.init(context);
-    return super.build(context);
-  }
-}
-
-
-
 
 
 
@@ -416,8 +416,8 @@ abstract class AppView extends MCView{
 
 
 
-
 class AppController extends MVController{
+
 
   /// Initialize any 'time-consuming' operations at the beginning.
   /// Initialize items essential to the Mobile Applications.
@@ -428,6 +428,7 @@ class AppController extends MVController{
     return Future.value(true);
   }
 
+
   /// Ensure certain objects are 'disposed.'
   /// Callec by the AppState.dispose() function.
   @override
@@ -435,14 +436,19 @@ class AppController extends MVController{
   void dispose() {
     Auth.dispose();
     Prefs.dispose();
+    App.dispose();
+    Assets.dispose();
     super.dispose();
   }
+
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    MyApp.didChangeAppLifecycleState(state);
+//    MyApp.didChangeAppLifecycleState(state);
   }
+
 
   /// Authentication listener
   listener(FirebaseUser user){
@@ -488,7 +494,6 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
-
 
 
 
