@@ -24,7 +24,7 @@
 
 import 'dart:async' show Future, StreamSubscription;
 
-import 'package:flutter/material.dart' show AppLifecycleState, BoxDecoration, BuildContext, Color, Drawer, DrawerHeader, FlutterError, FlutterErrorDetails, FutureBuilder, GenerateAppTitle, GlobalKey, Key, ListTile, ListView, Locale, LocaleResolutionCallback, LocalizationsDelegate, MaterialApp, Navigator, NavigatorObserver, NavigatorState, RouteFactory, Scaffold, ScaffoldState, State, StatelessWidget, Text, Theme, ThemeData, TransitionBuilder, Widget, WidgetBuilder, mustCallSuper;
+import 'package:flutter/material.dart' show StatefulWidget, AppLifecycleState, BoxDecoration, BuildContext, Color, Drawer, DrawerHeader, FlutterError, FlutterErrorDetails, FutureBuilder, GenerateAppTitle, GlobalKey, Key, ListTile, ListView, Locale, LocaleResolutionCallback, LocalizationsDelegate, MaterialApp, Navigator, NavigatorObserver, NavigatorState, RouteFactory, Scaffold, ScaffoldState, State, StatelessWidget, Text, Theme, ThemeData, TransitionBuilder, Widget, WidgetBuilder, mustCallSuper;
 
 import 'package:connectivity/connectivity.dart' show Connectivity, ConnectivityResult;
 
@@ -156,7 +156,7 @@ class App extends StatelessWidget {
 
 
 
-class MyApp extends StatedWidget {
+class MyApp extends StatefulWidget {
 
   factory MyApp(MCView view,{Key key}){
     if(_this == null) _this = MyApp._getInstance(view, key: key);
@@ -173,12 +173,6 @@ class MyApp extends StatedWidget {
   final AppView _vw;
   final AppController _state;
 
-  @override
-  Widget build(BuildContext context){
-     /// This is not being used in this particular case.
-  }
-
-
 
   @override
   State createState(){
@@ -186,12 +180,6 @@ class MyApp extends StatedWidget {
     return _state;
   }
 
-
-
-  @override
-  void initState(){
-      /// Nothing don't here yet.
-  }
 
 
   /// Called in the State object's dispose() function.
