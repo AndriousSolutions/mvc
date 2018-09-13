@@ -1,6 +1,9 @@
 name: mvc
 description: A Flutter MVC Framework
 
+environment:
+  sdk: '>=2.0.0 <3.0.0'
+
 dependencies:
   flutter:
     sdk: flutter
@@ -9,31 +12,39 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
 
+# https://pub.dartlang.org/packages/url_launcher
+# AppSettings.dart
+  url_launcher: 3.0.3
+
+
 #  mvc:
 #    path: ../../mvc/
 #    git:
 #      url: git://github.com/AndriousSolutions/mvc.git
 
   auth:
-#    path: ../../libs/auth
-    git:
-      url: git://github.com/AndriousSolutions/auth.git
+    path: ../../libs/auth
+#    git:
+#      url: git://github.com/AndriousSolutions/auth.git
 
   assets:
-#    path: ../../libs/assets
-    git:
-      url: git://github.com/AndriousSolutions/assets.git
+    path: ../../libs/assets
+#    git:
+#      url: git://github.com/AndriousSolutions/assets.git
 
   prefs:
-#    path: ../../libs/prefs
-    git:
-      url: git://github.com/AndriousSolutions/prefs.git
+    path: ../../libs/prefs
+#    git:
+#      url: git://github.com/AndriousSolutions/prefs.git
 
   # Files utilities from my library
   file_utils:
-    git:
-      url: git://github.com/AndriousSolutions/files.git
+    path: ../../libs/files/file_utils
+#    git:
+#      url: git://github.com/AndriousSolutions/files.git
 
+  # https://pub.dartlang.org/packages/firebase_database
+  firebase_database: ^1.0.3
 
   # https://pub.dartlang.org/packages/connectivity#-changelog-tab-
   connectivity: "^0.3.0"
