@@ -49,8 +49,6 @@ import 'package:mvc/src/LoadingScreen.dart' show LoadingScreen;
 import 'package:mvc/src/FireBase.dart' show FireBase;
 
 
-
-
 class App extends StatelessWidget {
 
   factory App(AppView view,{Key key,
@@ -451,7 +449,7 @@ class AppController extends MVController{
 
 class AppDrawer extends StatelessWidget {
   @override
-  Widget build (BuildContext ctxt) {
+  Widget build (BuildContext context) {
     return new Drawer(
         child: new ListView(
           children: <Widget>[
@@ -464,17 +462,17 @@ class AppDrawer extends StatelessWidget {
             new ListTile(
               title: new Text("Item => 1"),
               onTap: () {
-                Navigator.pop(ctxt);
-//                Navigator.push(ctxt,
-//                    new MaterialPageRoute(builder: (ctxt) => new FirstPage()));
+                Navigator.pop(context);
+//                Navigator.push(context,
+//                    new MaterialPageRoute(builder: (context) => new FirstPage()));
               },
             ),
             new ListTile(
               title: new Text("Item => 2"),
               onTap: () {
-                Navigator.pop(ctxt);
-//                Navigator.push(ctxt,
-//                    new MaterialPageRoute(builder: (ctxt) => new SecondPage()));
+                Navigator.pop(context);
+//                Navigator.push(context,
+//                    new MaterialPageRoute(builder: (context) => new SecondPage()));
               },
             ),
           ],
