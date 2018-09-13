@@ -201,6 +201,8 @@ abstract class StatedWidget {
   get state => _widget._state;
 
   get widget => _widget;
+  
+  get key => _widget.key;
 
   get context => _widget._state.context;
 
@@ -282,8 +284,10 @@ class StatedWidgetState extends State<WidgetStated> with WidgetsBindingObserver{
 
   /// Notify the framework that the internal state of this object has changed.
   void _reState(fn){
-    /// Call the State object's setState() function.
-    super.setState(fn);
+    if(mounted){
+      /// Call the State object's setState() function.
+      super.setState(fn);
+    }
   }
 
 
