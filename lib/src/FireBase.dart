@@ -119,10 +119,10 @@ class FireBase{
 
       _database = FirebaseDatabase(app: _app, databaseURL: 'https://working-memory-823375.firebaseio.com');
 
-      _app.options.then((options){
-        var settings = options;
-         var test = settings.databaseURL;
-      });
+//      _app.options.then((options){
+//        var settings = options;
+//         var test = settings.databaseURL;
+//      });
 
     }
     return _database;
